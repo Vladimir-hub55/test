@@ -1,0 +1,13 @@
+#pages li.active {
+    color: red;
+}
+
+.paginator {
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+}
+
+.paginator-active {
+    color: red;
+}
