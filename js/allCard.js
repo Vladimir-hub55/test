@@ -1,26 +1,26 @@
-var card = {}; // Карточки
+var card = {}; // Card
 
-function allCards() { // Появление всех карточек
-    var mainPage; // Взять 1 номер страницы
-    var cntPage = Math.ceil(cards.length / cnt); //количество страниц
+function allCards() { // Appearance of all cards
+    var mainPage; // Take 1 page number
+    var cntPage = Math.ceil(cards.length / cnt); //Number of pages
 
-    localStorage.clear(); // Очистка localStorage
-    card = {}; // Очистка карточек
-    var divNum = document.querySelectorAll('.card'); // Взять все элементы с классом "card"
-    for (var i = 0; i < divNum.length; i++) { // Скрыть все элементы
+    localStorage.clear(); // Clearing localStorage
+    card = {}; // Clearing cards
+    var divNum = document.querySelectorAll('.card'); // Take all the elements with the "card" class"
+    for (var i = 0; i < divNum.length; i++) { // Hide all elements
         divNum[i].classList.add('clear');
     }
     for (var i = 2; i <= cntPage; i++) {
         mainPage = document.getElementById('page' + i);
-        mainPage.classList.remove('paginator-active'); // Добавть класс активности
+        mainPage.classList.remove('paginator-active'); // Add an activity class
     }
-    for (var i = 0; i < divNum.length; i++) { // Появление элементов на аервой странице
+    for (var i = 0; i < divNum.length; i++) { // Appearance of elements on the first page
         if (i < cnt) {
             divNum[i].classList.remove('clear');
         }
     }
     mainPage = document.getElementById('page1');
-    mainPage.classList.add('paginator-active'); // Добавть класс активности
-    mainPage1 = mainPage; // Активация для всех элементов
+    mainPage.classList.add('paginator-active'); // Add an activity class
+    mainPage1 = mainPage; // Activation for all elements
     // clearDelete(); // Появление кароточек
 }

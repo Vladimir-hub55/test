@@ -1,16 +1,16 @@
-var card = {}; // Карточки
-var cnt = 2; //Сколько показывать записей
-var cards = []; // Масив для сортировки карточек
+var card = {}; // Card
+var cnt = 2; // How many records to show
+var cards = []; // Array to sort the cards
 
 $('document').ready(function() {
-    loadGoods(); // Включение функции для появления карточек
+    loadGoods(); // Enabling the function for the appearance of cards
 })
 
-function loadGoods() { // Функция для появления карточек
+function loadGoods() { // Function for the appearance of cards
     $.getJSON('../data.json', function(data) {
-        var out = []; // Карточки
-        for (var key in data) { // Взятие информации из JSON файла
-            // Перевод времени в нормальный вид
+        var out = []; // Card
+        for (var key in data) { // Taking information from a JSON file
+            // Converting time to normal view
             var unix_timestampa = data[key]['timestamp'];
             var date = new Date(unix_timestampa * 1000);
             var hours = date.getHours();
@@ -23,66 +23,66 @@ function loadGoods() { // Функция для появления карточ�
             }
 
             out += '<div class="card" id="card' + key + '">';
-            out += '<img class="card__img" id="img' + key + '" src="' + data[key].image + '">'; // Картинка
-            out += '<p id="filesize' + key + '">Размер: ' + data[key]['filesize'] + ' байт</p>'; // Размер
-            out += '<p id="time' + key + '">Время: ' + formattedTime + '</p>'; // Время
-            out += '<p id="category' + key + '">Категория: ' + data[key]['category'] + '</p>'; // Категория
-            out += '<button class="card__btn nnn" data-art="' + key + '" onclick="cardDelete(' + key + ')">X</button>'; // Кнопка удаления
+            out += '<img class="card__img" id="img' + key + '" src="' + data[key].image + '">'; // Picture
+            out += '<p id="filesize' + key + '">Размер: ' + data[key]['filesize'] + ' байт</p>'; // Size
+            out += '<p id="time' + key + '">Время: ' + formattedTime + '</p>'; // Time
+            out += '<p id="category' + key + '">Категория: ' + data[key]['category'] + '</p>'; // Category
+            out += '<button class="card__btn nnn" data-art="' + key + '" onclick="cardDelete(' + key + ')">X</button>'; // Delete button
             out += '</div>';
 
             cards.push({
-                filesize: data[key]['filesize'], // Размер
-                image: data[key].image, // Картинка
-                time: formattedTime, // Время
+                filesize: data[key]['filesize'], // Size
+                image: data[key].image, // Picture
+                time: formattedTime, // Time
                 Time: Time,
-                category: data[key]['category'], // Категория
-                btn: key // Кнопка удаления
+                category: data[key]['category'], // Category
+                btn: key // Delete button
             });
         }
 
 
-        $('.cards').html(out); // Появление карточек
+        $('.cards').html(out); // The appearance of the cards
 
-        $('.sortFilesize').on('click', sortFilesize); // Включение функции для сортировки по "Размеру"
-        $('.sortTime').on('click', sortTime); // Включение функции для сортировки по "Времени"
-        $('.sortCategory').on('click', sortCategory); // Включение функции для сортировки по "Категории"
-        $('button.card__btn').on('click', cardBtn); // Включение фунции для добвление карточек в localStorage
+        $('.sortFilesize').on('click', sortFilesize); // Enabling the function for sorting by " Size"
+        $('.sortTime').on('click', sortTime); // Enabling the function for sorting by " Time"
+        $('.sortCategory').on('click', sortCategory); // Enabling the function to sort by " Category"
+        $('button.card__btn').on('click', cardBtn); // Enabling the function for adding cards to localStorage
         sortTime();
-        var cntPage = Math.ceil(cards.length / cnt); //количество страниц
-        // Выводим список страниц
-        var paginator = document.querySelector('.paginator'); // Взять элемент с классом "paginator"
-        var page = ''; // Номера страниц
-        // Добавление страниц
+        var cntPage = Math.ceil(cards.length / cnt); // Number of pages
+        // Displaying a list of pages
+        var paginator = document.querySelector('.paginator'); // Take an element with the "paginator" class"
+        var page = ''; // Number of pages
+        // Adding Pages
         for (var i = 0; i < cntPage; i++) {
             page += '<span data-page="' + i * cnt + '" id="page' + (i + 1) + '">' + (i + 1) + '</span>';
         }
         paginator.innerHTML = page;
 
-        //Выводим первые записи
-        var divNum = document.querySelectorAll('.card'); // Взять все элементы с классом "card"
-        for (var i = 0; i < divNum.length; i++) { // Скрыть все элементы
+        // Output the first records
+        var divNum = document.querySelectorAll('.card'); // Take all the elements with the "card" class"
+        for (var i = 0; i < divNum.length; i++) { // Hide all elements
             divNum[i].classList.add('clear');
         }
-        for (var i = 0; i < divNum.length; i++) { // Появление элементов на аервой странице
+        for (var i = 0; i < divNum.length; i++) { // Appearance of elements on the first page
             if (i < cnt) {
                 divNum[i].classList.remove('clear');
             }
         }
 
-        var mainPage = document.getElementById('page1'); // Взять 1 номер страницы
-        mainPage.classList.add('paginator-active'); // Добавть класс активности
-        mainPage1 = mainPage; // Активация для всех элементов
+        var mainPage = document.getElementById('page1'); // Take 1 page number
+        mainPage.classList.add('paginator-active'); // Add an activity class
+        mainPage1 = mainPage; // Activation for all elements
         divNum1 = divNum; // 
 
     });
 };
 
-//Переключение страниц
+// Switching pages
 function pagination(event) {
     var e = event || window.event;
     var target = e.target;
     var id = target.id;
-    if (target.tagName.toLowerCase() != "span") return; // Если был нажат не номер сраницы
+    if (target.tagName.toLowerCase() != "span") return; // If the wrong page number was clicked
 
     var num = id.substr(4);
     var dataPage = +target.dataset.page;
@@ -113,7 +113,7 @@ function pagination(event) {
     }
 }
 
-function cardBtn() { // фунции для добвление карточек в localStorage
+function cardBtn() { // functions for adding cards to localStorage
     var articul = $(this).attr('data-art');
     if (card[articul] != undefined) {
         card[articul]++;
@@ -123,13 +123,13 @@ function cardBtn() { // фунции для добвление карточек 
     localStorage.setItem('card', JSON.stringify(card));
 };
 
-function clearDelete() { // Появление всех карточек
+function clearDelete() { // Appearance of all cards
     for (var i = 0; i < divNum1.length; i++) {
         divNum1[i].classList.remove('clear');
     }
 }
 
-function sortFilesize() { // функции для сортировки по "Размеру"
+function sortFilesize() { // functions for sorting by " Size"
     for (var ss = 0; ss < cards.length; ss++) {
         cards.sort(function(a, b) {
             return a.filesize - b.filesize;
@@ -141,7 +141,7 @@ function sortFilesize() { // функции для сортировки по "Р
     }
 };
 
-function sortCategory() { // функции для сортировки по "Категории"
+function sortCategory() { // functions for sorting by " Category"
     for (var ss = 0; ss < cards.length; ss++) {
         cards.sort(function(a, b) {
             var nameA = a.category.toLowerCase();
@@ -157,7 +157,7 @@ function sortCategory() { // функции для сортировки по "К
     }
 };
 
-function sortTime() { // функции для сортировки по "Времени"
+function sortTime() { // functions for sorting by " Time"
     for (var ss = 0; ss < cards.length; ss++) {
         cards.sort(function(a, b) {
             var nameA = a.Time.toLowerCase();
