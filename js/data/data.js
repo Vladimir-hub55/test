@@ -64,6 +64,20 @@ function loadGoods() { // Function for the appearance of cards
             divNum[i].classList.add('clear');
         }
         for (var i = 0; i < divNum.length; i++) { // Appearance of elements on the first page
+            var h = 0;
+            if (localStorage.getItem('card') != null) { // If localStorage is not empty
+                for (var i = 0; i < cards.length; i++) {
+                    if (localStorage.getItem('card')[2 + h] == i) { // If this element is present in localStorage
+                        divNum[localStorage.getItem('card')[2 + h]].classList.add('clear'); // Hide the card 
+                        h = h + 6;
+                        divNum[i].classList.add('clear'); // Hide the card 
+                    } else {
+                        if (i < cnt) {
+                            divNum[i].classList.remove('clear'); // The appearance of the cards
+                        }
+                    }
+                }
+            }
             if (i < cnt) {
                 divNum[i].classList.remove('clear');
             }
