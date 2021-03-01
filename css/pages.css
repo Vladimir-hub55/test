@@ -1,3 +1,14 @@
+.pag {
+    display: none;
+}
+
+span:hover {
+    color: red;
+    transition: all 0.5s;
+    cursor: pointer;
+    /* color: green; */
+}
+
 #pages li.active {
     color: red;
 }
@@ -10,4 +21,8 @@
 
 .paginator-active {
     color: red;
+}
+
+.pages {
+    margin: 0.5%;
 }
