@@ -1,5 +1,5 @@
 var card = {}; // Card
-var cnt = 2; // How many records to show
+var cnt = 20; // How many records to show
 var cards = []; // Array to sort the cards
 // var qqq = JSON.parse(localStorage.getItem('card'));
 
