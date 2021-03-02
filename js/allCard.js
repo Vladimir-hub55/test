@@ -6,6 +6,10 @@ function allCards() { // Appearance of all cards
 
     localStorage.clear(); // Clearing localStorage
     card = {}; // Clearing cards
+    trewq();
+    ewq();
+    // console.log('oooo');
+
     var divNum = document.querySelectorAll('.card'); // Take all the elements with the "card" class"
     for (var i = 0; i < divNum.length; i++) { // Hide all elements
         divNum[i].classList.add('clear');
