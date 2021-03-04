@@ -20,18 +20,23 @@ main {
 .cards {
     display: flex;
     flex-wrap: wrap;
-    justify-content: space-between;
+    justify-content: start;
+    /* justify-content: space-between; */
 }
 
 .card {
     border: 5px solid black;
-    margin: 0 auto 10px;
+    width: 18%;
+    margin-bottom: 1%;
+    margin-left: 1%;
+    /* margin: 0 auto 10px; */
     background-color: #fff;
     position: relative;
 }
 
 .card__img {
-    width: 250px;
+    width: 100%;
+    /* width: 250px; */
     height: 200px;
 }
 
@@ -41,4 +46,22 @@ main {
     right: 0;
     width: 10%;
     height: 10%;
+}
+
+@media(max-width: 1024px) {
+    .card {
+        width: 24%;
+    }
+}
+
+@media(max-width: 768px) {
+    .card {
+        width: 49%;
+    }
+}
+
+@media(max-width: 426px) {
+    .card {
+        width: 99%;
+    }
 }
