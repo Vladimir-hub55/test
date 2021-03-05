@@ -1,65 +1,66 @@
 var card = {}; // Card
 var cnt = 20; // How many records to show
 var cards = []; // Array to sort the cards
-// var qqq = JSON.parse(localStorage.getItem('card'));
-var dfg = 1;
-var gfd = 0;
 
-const requestURL = 'http://contest.elecard.ru/frontend_data/catalog.json';
-const xhr = new XMLHttpRequest();
+var firstStart = 1;
+var noFirstStart = 0;
 
-function trewq() {
+var number = 0;
+var start = 0;
+var end = cnt;
 
-    xhr.open('GET', requestURL);
-    xhr.responseType = 'json';
+var cardsDelete = [];
+var vseCards = 1;
 
+$.ajax({
+    url: "http://contest.elecard.ru/frontend_data/catalog.json",
+    method: "get",
+    type: "json",
+    success: function(data) {
+        loadingtask(data);
+    }
+});
 
-    xhr.onload = () => {
-        cards = [];
-        var out = []; // Card
-        for (var key in xhr.response) { // Taking information from a JSON file
-            // Converting time to normal view
-            var unix_timestampa = xhr.response[key]['timestamp'];
-            var date = new Date(unix_timestampa * 1000);
-            var hours = date.getHours();
-            var minutes = "0" + date.getMinutes();
-            var seconds = "0" + date.getSeconds();
-            var formattedTime = hours + ':' + minutes.substr(-2) + ':' + seconds.substr(-2);
-            var Time = hours + minutes.substr(-2) + seconds.substr(-2);
-            if (Time.length == 5) {
-                Time = '0' + hours + minutes.substr(-2) + seconds.substr(-2);
-            }
-
-
-            cards.push({
-                filesize: xhr.response[key]['filesize'], // Size
-                image: 'http://contest.elecard.ru/frontend_data/' + xhr.response[key].image, // Picture
-                time: formattedTime, // Time
-                Time: Time,
-                category: xhr.response[key]['category'], // Category
-                btn: key // Delete button
-            });
+function loadingtask(information) {
+    for (var i = 0; i < information.length; i++) {
+        var unix_timestampa = information[i]['timestamp'];
+        var date = new Date(unix_timestampa * 1000);
+        var hours = date.getHours();
+        var minutes = "0" + date.getMinutes();
+        var seconds = "0" + date.getSeconds();
+        var formattedTime = hours + ':' + minutes.substr(-2) + ':' + seconds.substr(-2);
+        var Time = hours + minutes.substr(-2) + seconds.substr(-2);
+        if (Time.length == 5) {
+            Time = '0' + hours + minutes.substr(-2) + seconds.substr(-2);
         }
 
-        qwert();
-        sortTime();
-        if (localStorage.getItem('card') !== null) {
-            if (gfd == 1) {
-                var qqqq = JSON.parse(localStorage.getItem('card'));
-                // console.log(cards.length + ' -cards');
-                for (var i = 0; i <= cards.length; i++) {
-                    if (qqqq[i] >= 1) {
-                        cards.splice(i, 1);
-                        // divNum1[i].classList.add('clear');
-                    }
+
+        cards.push({
+            filesize: information[i]['filesize'], // Size
+            image: 'http://contest.elecard.ru/frontend_data/' + information[i].image, // Picture
+            time: formattedTime, // Time
+            Time: Time,
+            category: information[i]['category'], // Category
+            btn: i // Delete button
+        });
+        cardsDelete = [].concat(cards);
+    }
+    vseCards = 0;
+    dataOutput();
+    sortTime();
+    if (localStorage.getItem('card') !== null) {
+        if (noFirstStart == 1) {
+
+            var qqqq = JSON.parse(localStorage.getItem('card'));
+            for (var i = 0; i <= cards.length; i++) {
+                if (qqqq[i] >= 1) {
+                    cards.splice(i, 1);
                 }
-                qwert();
             }
+            dataOutput();
         }
     }
 }
-trewq();
-ewq();
 
 // Switching pages
 function pagination(event) {
@@ -92,6 +93,8 @@ function pagination(event) {
             if (qqqq[i] == 1) {}
         }
     }
+    number = num;
+    dataOutput();
 }
 
 function cardBtn() { // functions for adding cards to localStorage
@@ -111,19 +114,23 @@ function clearDelete() { // Appearance of all cards
 }
 
 function sortFilesize() { // functions for sorting by " Size"
-    for (var ss = 0; ss < cards.length; ss++) {
+    for (var ss = start; ss < end; ss++) {
         cards.sort(function(a, b) {
             return a.filesize - b.filesize;
         });
-        document.getElementById('img' + ss).src = cards[ss]['image'];
-        document.getElementById('filesize' + ss).innerHTML = '<p id="filesize' + ss + '">Размер: ' + cards[ss]['filesize'] + ' байт</p>';
-        document.getElementById('time' + ss).innerHTML = '<p id="time' + cards[ss] + '">Время: ' + cards[ss]['time'] + '</p>';
-        document.getElementById('category' + ss).innerHTML = '<p id="category' + cards[ss] + '">Категория: ' + cards[ss]['category'] + '</p>';
+        if (cards[ss] != undefined) {
+            document.getElementById('img' + ss).src = cards[ss]['image'];
+            document.getElementById('filesize' + ss).innerHTML = '<p id="filesize' + ss + '">Размер: ' + cards[ss]['filesize'] + ' байт</p>';
+            document.getElementById('time' + ss).innerHTML = '<p id="time' + cards[ss] + '">Время: ' + cards[ss]['time'] + '</p>';
+            document.getElementById('category' + ss).innerHTML = '<p id="category' + cards[ss] + '">Категория: ' + cards[ss]['category'] + '</p>';
+        }
     }
 };
 
 function sortCategory() { // functions for sorting by " Category"
-    for (var ss = 0; ss < cards.length; ss++) {
+    // for (var ss = 0; ss < cards.length; ss++) {
+    for (var ss = start; ss < end; ss++) {
+
         cards.sort(function(a, b) {
             var nameA = a.category.toLowerCase();
             var nameB = b.category.toLowerCase();
@@ -131,15 +138,17 @@ function sortCategory() { // functions for sorting by " Category"
             if (nameA > nameB) return 1;
             return 0;
         });
-        document.getElementById('img' + ss).src = cards[ss]['image'];
-        document.getElementById('filesize' + ss).innerHTML = '<p id="filesize' + ss + '">Размер: ' + cards[ss]['filesize'] + ' байт</p>';
-        document.getElementById('time' + ss).innerHTML = '<p>Время: ' + cards[ss]['time'] + '</p>';
-        document.getElementById('category' + ss).innerHTML = '<p>Категория: ' + cards[ss]['category'] + '</p>';
+        if (cards[ss] != undefined) {
+            document.getElementById('img' + ss).src = cards[ss]['image'];
+            document.getElementById('filesize' + ss).innerHTML = '<p id="filesize' + ss + '">Размер: ' + cards[ss]['filesize'] + ' байт</p>';
+            document.getElementById('time' + ss).innerHTML = '<p>Время: ' + cards[ss]['time'] + '</p>';
+            document.getElementById('category' + ss).innerHTML = '<p>Категория: ' + cards[ss]['category'] + '</p>';
+        }
     }
 };
 
 function sortTime() { // functions for sorting by " Time"
-    for (var ss = 0; ss < cards.length; ss++) {
+    for (var ss = start; ss < end; ss++) {
         cards.sort(function(a, b) {
             var nameA = a.Time.toLowerCase();
             var nameB = b.Time.toLowerCase();
@@ -147,21 +156,30 @@ function sortTime() { // functions for sorting by " Time"
             if (nameA > nameB) return 1;
             return 0;
         });
-        document.getElementById('img' + ss).src = cards[ss]['image'];
-        document.getElementById('filesize' + ss).innerHTML = '<p id="filesize' + ss + '">Размер: ' + cards[ss]['filesize'] + ' байт</p>';
-        document.getElementById('time' + ss).innerHTML = '<p>Время: ' + cards[ss]['time'] + '</p>';
-        document.getElementById('category' + ss).innerHTML = '<p>Категория: ' + cards[ss]['category'] + '</p>';
+        if (cards[ss] != undefined) {
+            document.getElementById('img' + ss).src = cards[ss]['image'];
+            document.getElementById('filesize' + ss).innerHTML = '<p id="filesize' + ss + '">Размер: ' + cards[ss]['filesize'] + ' байт</p>';
+            document.getElementById('time' + ss).innerHTML = '<p>Время: ' + cards[ss]['time'] + '</p>';
+            document.getElementById('category' + ss).innerHTML = '<p>Категория: ' + cards[ss]['category'] + '</p>';
+        }
     }
 };
 
-function qwert() {
+function dataOutput() {
     var out = document.getElementById('cards');
     out.innerHTML = '';
 
     let str = ' ';
     var qqqq = JSON.parse(localStorage.getItem('card'));
 
-    for (let i = 0; i < cards.length; i++) {
+    var nomer = number;
+    if (number == 0) {
+        nomer = 1;
+    }
+    start = (nomer - 1) * cnt;
+    end = start + cnt;
+
+    for (var i = start; i < end; i++) {
         if (cards[i] !== undefined) {
             str += '<div class="card" id="card' + i + '">';
             str += '<img class="card__img" id="img' + i + '" src="' + cards[i].image + '">'; // Picture
@@ -172,6 +190,7 @@ function qwert() {
             str += '</div>';
         }
     }
+
     out.innerHTML = str;
     $('.sortFilesize').on('click', sortFilesize); // Enabling the function for sorting by " Size"
     $('.sortTime').on('click', sortTime); // Enabling the function for sorting by " Time"
@@ -201,9 +220,7 @@ function qwert() {
             for (var i = 0; i < cards.length; i++) {
                 if (qqq[i] >= 1) { // If this element is present in localStorage
                 } else {
-                    if (i < cnt) {
-                        divNum[i].classList.remove('clear'); // The appearance of the cards
-                    }
+                    if (i < cnt) {}
                 }
             }
         }
@@ -217,18 +234,16 @@ function qwert() {
         divNum[i].classList.remove('clear');
         j++;
     }
-
-    var mainPage = document.getElementById('page1'); // Take 1 page number
+    if (number == 0) {
+        var mainPage = document.getElementById('page1'); // Take 1 page number
+    } else {
+        var mainPage = document.getElementById('page' + number); // Take 1 page number
+    }
     mainPage.classList.add('paginator-active'); // Add an activity class
     mainPage1 = mainPage; // Activation for all elements
     divNum1 = divNum; // 
-    if (dfg == 1) {
-        dfg = 0;
-        gfd = 1
-        trewq();
+    if (firstStart == 1) {
+        firstStart = 0;
+        noFirstStart = 1
     }
-}
-
-function ewq() {
-    xhr.send();
 }
